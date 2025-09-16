@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+cd ~$USER/git/spectacle
+conda activate spectacle
+python spectacle_server.py
