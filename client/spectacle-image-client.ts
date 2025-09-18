@@ -8,14 +8,14 @@ import * as path from 'path';
  * @property {string} [imagePath] - The full file path to the generated image file, present only if status is 'success'.
  * @property {string} [message] - The error message describing the failure, present only if status is 'error'.
  */
-type ImageGenerationResult =
+export type ImageGenerationResult =
   | { status: 'success'; imagePath: string }
   | { status: 'error'; message: string };
 
 /**
  * Abstract base class for image generation implementations.
  */
-abstract class ImageGenerator {
+export abstract class ImageGenerator {
     /**
      * Generates an image based on a provided prompt and saves it to a file.
      * @abstract
@@ -39,16 +39,15 @@ abstract class ImageGenerator {
  * Implementation of ImageGenerator that uses Qwen-Image to generate images.
  * Interacts with Spectacle server by writing prompt files and polling for results.
  */
-class QwenImageGenerator extends ImageGenerator {
+export class QwenImageGenerator extends ImageGenerator {
     private directoryPath: string = "../image-server";
 
     /**
      * Creates an instance of QwenImageGenerator.
      * @param {string} directoryPath - The directory where prompt and image files are stored.
      */
-    constructor(directoryPath: string) {
+    constructor() {
         super();
-        this.directoryPath = directoryPath;
     }
 
     /**
@@ -83,7 +82,7 @@ class QwenImageGenerator extends ImageGenerator {
         }
 
         // Wait for either the image or error file
-        const maxAttempts = 300; // 5 minutes with 1s intervals
+        const maxAttempts = 9600; // 160 minutes with 1s intervals
         let attempts = 0;
         while (attempts < maxAttempts) {
             try {
