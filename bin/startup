@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
-cd ~$USER/git/spectacle
+source ~/.bash_profile
+cd ${HOME}/git/spectacle
 conda activate spectacle
 python spectacle_server.py
