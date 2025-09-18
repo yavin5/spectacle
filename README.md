@@ -108,6 +108,7 @@ If you want to try the faster Qwen Image Lightning model, install this also:
 
 You can run it in the foreground like this (but don't run it yet):
 
+     # mkdir -p ../image-server
      # python3 spectacle_server.py
 
 On the first run it will download around 70GB worth of files, including the Qwen-Image model files, and other heavy binaries that are required to run the transformers. Run it when you know for you have more than enough disk space still free, and when you know you have the network capability of downloading that size of binary files.
@@ -127,6 +128,52 @@ os.environ['HF_HUB_OFFLINE'] = '0'
 Set the value to a '1'. That makes Huggingface Hub go offline so it doesn't delay, attempting to download things it already has.
 
 After that it may take only around 3 minutes to generate an image with the above settings on the aformentioned hardware. It tends to use only around 5GB of system RAM.
+
+#### Generating Images Via Command Line
+
+      $ cd ~/git/image-server
+      $ echo 'A very old President is sitting on a recliner chair watching cartoons on TV and drinking a glass of sparkling red wine while a goofy looking doberman is warming himself in front of the fireplace.' >> 0123456-0xf00fb00b123456-1024x1024.txt
+
+
+#### Linux Systemd Service
+
+For Linux distributions that use systemd (all modern ones do), here's how to run the Spectacle server when the machine boots, as a specified user, with a standard command line way of starting, stopping, and restarting the service, and a standard command line way of looking at the log.
+
+As root, add the file /etc/systemd/system/spectacle.service with the below content:
+
+```config
+[Unit]
+Description=Spectacle Service
+After=network-online.target
+
+[Service]
+ExecStart=/bin/bash /home/jasonb/git/spectacle/bin/startup
+User=jasonb
+Group=jasonb
+Restart=always
+RestartSec=3
+Environment="PATH=/usr/local/cuda/bin:/home/jasonb/.local/bin:/home/jasonb/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/var/lib/snapd/snap/bin"
+
+[Install]
+WantedBy=default.target
+```
+To enable the spectacle service, as root (you only need to run this one time to get it initialized):
+
+     # systemctl daemon-reload
+     # systemctl enable --now spectacle
+     # systemctl start spectacle
+
+Also to stop the service:
+
+     # systemctl stop spectacle
+
+To see the logs:
+
+     # systemctl status spectacle
+
+.. and:
+
+     # journalctl -fu spectacle
 
 #### Tuning
 
